@@ -408,3 +408,76 @@ fx_strategy12_orb:       # ORB PORT from the stock champion to an FX MAJORS BASK
     session: ["london", "ny"]    # 07:00 UTC / 13:30 UTC opening range
     regime_filter: [false, true] # USD-strength index broke in the trade's direction
     rs_topk: [null, 3]           # trade only the 3 strongest pairs vs USD that session
+
+fx_strategy13_apa:       # "Advanced Price Action" wedge-breakout continuation (from Peter's screenshot).
+                         # Falling-wedge pullback to a demand zone + LONG-BAR breakout. pre-registered 2026-07-23.
+  instrument: "XAU_USD"
+  spread_price: 0.35
+  granularities: ["M1", "M5"]   # M1 = scalping, M5 = intraday (each judged as its own study)
+  history_start: "2018-01-01"
+  session_start_min: 480    # 08:00 UTC (London+NY active gold hours)
+  entry_cutoff_min: 1200    # 20:00 UTC - no new entries after
+  flat_min: 1260            # 21:00 UTC - flat, never overnight
+  atr_len: 14
+  pullback_len: 20          # window that defines the wedge / demand zone
+  breakout_lookback: 5      # recent highs/lows the long bar must break
+  stop_buf_atr: 0.05        # stop just beyond the demand zone by this x ATR
+  ema_len: 200              # trend context (optional filter)
+  max_trades_day: 2
+  min_stop_cost_mult: 2.0
+  select_start: "2024-07-01"
+  select_end: "2025-12-31"
+  holdout_end: "2024-06-30"
+  min_select_trades: 40
+  walkforward_folds: 6
+  min_positive_frac: 0.6
+  slippage_mult: [1.0, 2.0]
+  gate:
+    min_trades: 100
+    min_expectancy_r: 0.05
+    min_profit_factor: 1.15
+    min_quarters_positive_frac: 0.6
+  grid:
+    atr_mult: [1.5, 2.5]      # "long bar" = range >= atr_mult x ATR (the breakout candle)
+    target_r: [2.0, 3.0]      # measured-move target as R multiple (TP1/TP2 proxy)
+    trend_filter: [false, true]  # require close vs EMA200 in the breakout direction
+
+fx_strategy13_apa_fx:    # Advanced Price Action wedge-breakout ported to the FX MAJORS basket.
+                         # Same engine as fx_strategy13_apa (gold); pooled across pairs. pre-registered 2026-07-23.
+  instruments: ["EUR_USD", "GBP_USD", "AUD_USD", "NZD_USD", "USD_JPY", "USD_CHF", "USD_CAD"]
+  spread_pips:
+    EUR_USD: 1.4
+    GBP_USD: 2.0
+    AUD_USD: 1.5
+    NZD_USD: 2.0
+    USD_JPY: 1.6
+    USD_CHF: 1.8
+    USD_CAD: 1.8
+  granularities: ["M1", "M5"]   # M1 scalping, M5 intraday (each its own study)
+  history_start: "2018-01-01"
+  session_start_min: 420    # 07:00 UTC London open (FX active hours)
+  entry_cutoff_min: 1200    # 20:00 UTC
+  flat_min: 1260            # 21:00 UTC
+  atr_len: 14
+  pullback_len: 20
+  breakout_lookback: 5
+  stop_buf_atr: 0.05
+  ema_len: 200
+  max_trades_day: 2
+  min_stop_cost_mult: 2.0
+  select_start: "2024-07-01"
+  select_end: "2025-12-31"
+  holdout_end: "2024-06-30"
+  min_select_trades: 100
+  walkforward_folds: 6
+  min_positive_frac: 0.6
+  slippage_mult: [1.0, 2.0]
+  gate:
+    min_trades: 100
+    min_expectancy_r: 0.05
+    min_profit_factor: 1.15
+    min_quarters_positive_frac: 0.6
+  grid:
+    atr_mult: [1.5, 2.5]
+    target_r: [2.0, 3.0]
+    trend_filter: [false, true]
